@@ -9,10 +9,30 @@ import {
 // npm install --save-dev redux-mock-store
 import configureStore from 'redux-mock-store';
 import thunkMiddleware from 'redux-thunk';
+// import fetchMock from 'fetch-mock';
 
 const mockStore = configureStore([thunkMiddleware]);
 
-describe('actions', () => {
+const data = {
+  robots: [
+    {
+      id: '123',
+      name: 'robot123',
+      email: 'robot123@gmail.com',
+    },
+  ],
+};
+
+const fetchData = () => {
+  return dispatch => {
+    return fetch('/users').then(() => dispatch(actions.requestSuccess(data)));
+  };
+};
+
+describe('async actions', () => {
+  // afterEach(() => {
+  //   fetchMock.restore();
+  // });
   it('should create an action to search robots', () => {
     const text = 'woohoo';
     const exptectedAction = {
@@ -29,7 +49,36 @@ describe('actions', () => {
     const expectedAction = {
       type: REQUEST_ROBOTS_PENDING,
     };
-    expect(action).toEqual([expectedAction]);
-    // expect(action[0]).toEqual(expectedAction);
+    expect(action[0]).toEqual(expectedAction);
   });
+
+  it('handles succes call', () => {
+    const store = mockStore({});
+
+    store.dispatch(fetchData()).then(() => {
+      const action = store.getActions();
+      expect(action).toEqual(actions.requestSuccess());
+    });
+  });
+
+  // it('handles success call - alternative', () => {
+  //   fetchMock.getOnce('https://jsonplaceholder.typicode.com/users', {
+  //     body: data,
+  //   });
+
+  //   const expectedActions = [
+  //     {
+  //       type: REQUEST_ROBOTS_PENDING,
+  //     },
+  //     { type: REQUEST_ROBOTS_SUCCESS, body: data },
+  //   ];
+
+  //   const store = mockStore({});
+  //   console.log('Store=', store);
+
+  //   store.dispatch(actions.requestRobots()).then(() => {
+  //     const action = store.getActions();
+  //     expect(action[0]).toEqual(expectedActions);
+  //   });
+  // });
 });

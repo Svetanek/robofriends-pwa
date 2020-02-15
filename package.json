@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://aneagoie.github.io/robofriends-pwa",
   "dependencies": {
+    "fetch-mock": "^9.0.0-beta.2",
     "gh-pages": "^1.1.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
